@@ -4,18 +4,22 @@ const Button = ({ handleClick, text }) => {
 	return <button onClick={handleClick}>{text}</button>;
 };
 
+const StatisticsLine = ({text, value}) => {
+	return <p>{text} {value}</p>
+}
+
 const Statistics = ({ good, neutral, bad }) => {
 	const all = good + neutral + bad;
 	const average = (good - bad) / all;
 	const positive = (good / all) * 100;
 	return (
 		<div>
-			<p>good {good}</p>
-			<p>neutral {neutral}</p>
-			<p>bad {bad}</p>
-			<p>all {all}</p>
-			<p>average {average}</p>
-			<p>positive {positive} %</p>
+			<StatisticsLine text={"good "} value={good} />
+			<StatisticsLine text={"neutral "} value={neutral} />
+			<StatisticsLine text={"bad "} value={bad} />
+			<StatisticsLine text={"all "} value={all} />
+			<StatisticsLine text={"average "} value={average} />
+			<StatisticsLine text={"positive "} value={positive + " %"} />
 		</div>
 	);
 };
@@ -33,7 +37,7 @@ const App = () => {
 	const handleGood = () => {
 		setGood(good + 1);
 		if (!showStatistics) {
-			setShowStatistics(true); // this is an awful solution - useEffect would be nice
+			setShowStatistics(true); // this is an awful solution - useEffect would be nice though
 		} 
 	};
 
