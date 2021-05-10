@@ -1,7 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const Button = ({ handleClick }) => {
-	return <button onClick={handleClick}>next anecdote</button>;
+const AnecdoteOfTheDay = ({ anecdote, votes }) => {
+	return (
+		<div>
+			<h1>Anecdote of the day</h1>
+			<p>{anecdote}</p>
+			<p>has {votes} votes</p>
+		</div>
+	);
+};
+
+const MostVoted = ({ anecdote, votes }) => {
+	return (
+		<div>
+			<h1>Anecdote with most votes</h1>
+			<p>{anecdote}</p>
+			<p>has {votes} votes</p>
+		</div>
+	);
+};
+
+const Button = ({ handleClick, text }) => {
+	return <button onClick={handleClick}>{text}</button>;
 };
 
 const App = () => {
@@ -15,19 +35,37 @@ const App = () => {
 	];
 
 	const [selected, setSelected] = useState(0);
+	const [vote, setVote] = useState(() =>
+		Object.values(new Array(anecdotes.length).fill(0))
+	);
+	const [mostVotes, setMostVotes] = useState(0);
+	const [mostVoted, setMostVoted] = useState(0);
+
 	const getRandomNumber = (min, max) =>
 		Math.floor(Math.random() * (max - min + 1));
-	/* const randonNumberGenerator = () => getRandomNumber(0, 5); */
-	const handleClick = () => {
-		let number = getRandomNumber(0, 5);
+
+	const handleNextAnecdote = () => {
+		const number = getRandomNumber(0, 5);
 		setSelected(number);
-		console.log(number);
 	};
+
+	const handleVote = () => {
+		const copyVote = [...vote];
+		copyVote[selected] += 1;
+		setVote(copyVote);
+		setMostVotes(Math.max(...copyVote));
+	};
+
+	useEffect (() => { // I have no clue how to code this bug-free using hooks but without useEffect
+		setMostVoted(vote.indexOf(mostVotes));
+	}, [vote, mostVotes])
 
 	return (
 		<div>
-			<p>{anecdotes[selected]}</p>
-			<Button handleClick={handleClick} />
+			<AnecdoteOfTheDay anecdote={anecdotes[selected]} votes={vote[selected]} />
+			<Button handleClick={handleVote} text="vote" />
+			<Button handleClick={handleNextAnecdote} text="next anecdote" />
+			<MostVoted anecdote={anecdotes[mostVoted]} votes={vote[mostVoted]} />
 		</div>
 	);
 };
